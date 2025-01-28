@@ -187,7 +187,7 @@ export class ConfigTemplateCard extends LitElement {
         config[key] = this._evaluateConfig(value);
       });
     } else if (typeof config === 'string' && config.includes('${')) {
-      return _evaluateTemplate(config);
+      return this._evaluateTemplate(config);
     }
 
     return config;
@@ -236,10 +236,14 @@ export class ConfigTemplateCard extends LitElement {
       return eval(template.substring(2, template.length - 1));
     }
 
-    template.match(/\${[^}]+}/g).forEach(m => {
-      const repl = eval(m.substring(2, m.length - 1));
-      template = template.replace(m, repl);
-    });
+	const matches = template.match(/\${[^}]+}/g);
+    if (matches) {
+      matches.forEach(m => {
+        const repl = eval(m.substring(2, m.length - 1));
+        template = template.replace(m, repl);
+      });
+    }
+
     return template;
   }
 }
